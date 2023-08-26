@@ -179,6 +179,61 @@ long long convert(vector<int> v){
         }
         return ans;
     };
+    vector<vector<int> > getPermutations(vector<int> nums) {
+        vector<vector<int> > result;
+
+        if (nums.size() <= 1) {
+            result.push_back(nums);
+            return result;
+        }
+
+        for (size_t i = 0; i < nums.size(); ++i) {
+            vector<int> remaining = nums;
+            remaining.erase(remaining.begin() + i);
+
+            vector<vector<int> > permutations = getPermutations(remaining);
+
+            for (const auto& perm : permutations) {
+                vector<int> new_perm;
+                new_perm.push_back(nums[i]);
+                new_perm.insert(new_perm.end(), perm.begin(), perm.end());
+                result.push_back(new_perm);
+            }
+        }
+        return result;
+    };
+    void answer(){
+        vector<int> current(l,0);
+        for(int i=0;i<l;i++){
+            if (i<=z-1){
+            current[i]=i+1;
+            }else{
+                current[i]=-1;
+            }
+        }
+        vector<vector<int> > permute = getPermutations(current);
+        ll ans= INT16_MAX;
+        vector<int> next;
+        for (auto x: permute){
+            if(convert(x)<ans){
+                ans=convert(x);
+                next=x;
+            }
+        }
+        int w[z];
+        for(int i=0;i<l;i++){
+            if (next[i]!= -1){
+                w[next[i]-1]=i+1;
+            }
+        }
+        cout<<"minimum cost: "<< ans<<endl;
+        cout<<"minimum cost mapping :";
+        for(auto x: w){
+            cout<<x<<" ";
+        }
+        cout<<endl;
+
+    }
 
 
     void compute_allocation()
@@ -257,6 +312,7 @@ int main(int argc, char** argv )
     string outputfilename ( argv[2] );
     
     SportsLayout *s  = new SportsLayout( inputfilename );
+    s->answer();
     s->compute_allocation();
     s->write_to_file(outputfilename);
 
