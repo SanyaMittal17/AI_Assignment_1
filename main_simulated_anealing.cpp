@@ -21,7 +21,6 @@ class SportsLayout{
     int **N;
     int time;
     int *mapping;
-    const double INITIAL_STATE = 1000.0;
     const double FINAL_STATE = 0.01;
 
 
@@ -239,9 +238,9 @@ class SportsLayout{
         cout<<endl;
 
     }
-    double schedule(double elapsed_time) {
+    double schedule(double elapsed_time, double initial_state) {
         double elapsedTimeRatio = elapsed_time /(time*60);
-        double currentTemperature = INITIAL_STATE - elapsedTimeRatio * (INITIAL_STATE - FINAL_STATE);
+        double currentTemperature = initial_state - elapsedTimeRatio * (initial_state - FINAL_STATE);
         return currentTemperature;
         // return INITIAL_STATE * exp(-elapsed_time /(time*60));  // Exponential cooling schedule
 }
@@ -267,6 +266,9 @@ class SportsLayout{
         random_device rd;
         mt19937 rng(rd());
         int timeElapsed = 0;
+        vector<int> news=current;
+        shuffle(news.begin(),news.end(),rng);
+        double updatedInitialState = abs(convert(news)-convert(current));
         auto start = chrono::high_resolution_clock::now();
         vector<int> next_state;
         while(timeElapsed < time*60){
@@ -279,7 +281,7 @@ class SportsLayout{
             }
             iter+=1;
             timeElapsed = static_cast<int>(elapsedDuration.count());
-            double T = schedule(timeElapsed);
+            double T = schedule(timeElapsed,updatedInitialState);
             vector<vector<int> > neighbor = neighborhood(current);
             uniform_int_distribution<> dist(0, neighbor.size() - 1);
             int randomIndex = dist(rng);
@@ -288,7 +290,7 @@ class SportsLayout{
             // ll min_cost=INT_MAX;
             ll next_cost = convert(next_state);
 
-            ll delt_E = cur_cost-next_cost;
+            double delt_E = cur_cost-next_cost;
             if (delt_E>=0){
                 current=next_state;
                 if (next_cost<=global_cost){
@@ -337,7 +339,7 @@ int main(int argc, char** argv )
     string outputfilename ( argv[2] );
     
     SportsLayout *s  = new SportsLayout( inputfilename );
-    s->answer();
+    // s->answer();
     s->compute_allocation();
     s->write_to_file(outputfilename);
 
