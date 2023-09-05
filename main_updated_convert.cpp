@@ -178,12 +178,12 @@ long long convert(vector<int> v){
                     swap(w[i],w[j]);
                     if (w[j]!=-1 && w[i]!=-1)
 {                    for (int k=0;k<z;k++){
-                        cost+=((long long)N[w[k]-1][w[i]-1]+(long long)N[w[i]-1][w[k]-1])*((long long)T[k][j]-(long long)T[k][i]);
-                        cost+=((long long)N[w[k]-1][w[j]-1]+(long long)N[w[j]-1][w[k]-1])*((long long)T[k][i]-(long long)T[k][j]);
+                        cost+=((long long)N[k][i]+(long long)N[i][k])*((long long)T[w[k]-1][w[j]-1]-(long long)T[w[k]-1][w[i]-1]);
+                        cost+=((long long)N[k][j]+(long long)N[j][k])*((long long)T[w[k]-1][w[i]-1]-(long long)T[w[k]-1][w[j]-1]);
                     }}
                     if (w[j]==-1){
                         for (int k=0;k<z;k++){
-                        cost+=((long long)N[w[k]-1][w[i]-1]+(long long)N[w[i]-1][w[k]-1])*((long long)T[k][j]-(long long)T[k][i]);}
+                        cost+=((long long)N[w[k]][w[i]]+(long long)N[i][k])*((long long)T[k-1][j-1]-(long long)T[k-1][i-1]);}
                     }
                     if (cost<=curr_min){ans=pair<vector<int>,ll>(w,cost);curr_min=cost;}
                         cost=parent_cost;
